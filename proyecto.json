@@ -1,0 +1,497 @@
+[
+    {
+        "id": "7025a9372ee6fb08",
+        "type": "tab",
+        "label": "Proyecto",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "d82dce1c8d40985e",
+        "type": "inject",
+        "z": "7025a9372ee6fb08",
+        "name": "INICIAR",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "1",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "str",
+        "x": 120,
+        "y": 80,
+        "wires": [
+            [
+                "96246f6e4dde247e",
+                "efaa538e88ec3b0a",
+                "2c1b886df0f29ac3",
+                "842241f4a9df2aee",
+                "95277a2dea6830b4",
+                "54586ef351f90928",
+                "4cd2fc5105a093fc"
+            ]
+        ]
+    },
+    {
+        "id": "842241f4a9df2aee",
+        "type": "exec",
+        "z": "7025a9372ee6fb08",
+        "command": "df -H /dev/mapper/rl-root | awk 'NR==2 {print $4}' | sed 's/G//'",
+        "addpay": "",
+        "append": "",
+        "useSpawn": "false",
+        "timer": "",
+        "winHide": false,
+        "oldrc": false,
+        "name": "DISK LIbre",
+        "x": 310,
+        "y": 280,
+        "wires": [
+            [
+                "f87319bed9e993e3"
+            ],
+            [],
+            []
+        ]
+    },
+    {
+        "id": "efaa538e88ec3b0a",
+        "type": "exec",
+        "z": "7025a9372ee6fb08",
+        "command": "df -H /dev/mapper/rl-root | awk 'NR==2 {print $2}' | sed 's/G//'",
+        "addpay": "",
+        "append": "",
+        "useSpawn": "false",
+        "timer": "",
+        "winHide": false,
+        "oldrc": false,
+        "name": "DISK Total",
+        "x": 310,
+        "y": 160,
+        "wires": [
+            [
+                "197818fa2bce5227"
+            ],
+            [],
+            []
+        ]
+    },
+    {
+        "id": "2c1b886df0f29ac3",
+        "type": "exec",
+        "z": "7025a9372ee6fb08",
+        "command": "df -H /dev/mapper/rl-root | awk 'NR==2 {print $3}' | sed 's/G//'",
+        "addpay": "",
+        "append": "",
+        "useSpawn": "false",
+        "timer": "",
+        "winHide": false,
+        "oldrc": false,
+        "name": "DISK Used",
+        "x": 310,
+        "y": 220,
+        "wires": [
+            [
+                "9bc5d8facf7d49d2"
+            ],
+            [],
+            []
+        ]
+    },
+    {
+        "id": "95277a2dea6830b4",
+        "type": "exec",
+        "z": "7025a9372ee6fb08",
+        "command": "ifconfig | grep \"RX\" | head -1 | awk '{print $3}'",
+        "addpay": "",
+        "append": "",
+        "useSpawn": "false",
+        "timer": "",
+        "winHide": false,
+        "oldrc": false,
+        "name": "RX Out",
+        "x": 300,
+        "y": 340,
+        "wires": [
+            [
+                "5e59929959f49eaf"
+            ],
+            [],
+            []
+        ]
+    },
+    {
+        "id": "54586ef351f90928",
+        "type": "exec",
+        "z": "7025a9372ee6fb08",
+        "command": "ifconfig | grep \"TX\" | head -1 | awk '{print $3}'",
+        "addpay": "",
+        "append": "",
+        "useSpawn": "false",
+        "timer": "",
+        "winHide": false,
+        "oldrc": false,
+        "name": "TX Out",
+        "x": 300,
+        "y": 400,
+        "wires": [
+            [
+                "a280febcde1d7197"
+            ],
+            [],
+            []
+        ]
+    },
+    {
+        "id": "9a2bcb093cea89ca",
+        "type": "debug",
+        "z": "7025a9372ee6fb08",
+        "name": "debug 21",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1320,
+        "y": 360,
+        "wires": []
+    },
+    {
+        "id": "92382872d52dbdba",
+        "type": "function",
+        "z": "7025a9372ee6fb08",
+        "name": "RAM",
+        "func": "\n// Informacion del Dispositivo\nvar ram_memory = msg.payload.totalmem;\nvar ram_usada = msg.payload.memusage;\nvar ram_libre = msg.payload.freemem;\n\n\n//Globalizar\nglobal.set(\"MemoriaTotal\", ram_memory);\nglobal.set(\"MemoriaUsada\", ram_usada);\nglobal.set(\"MemoriaLibre\", ram_libre);\n\nreturn msg;",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 490,
+        "y": 60,
+        "wires": [
+            [
+                "7be15edef5e1e07f"
+            ]
+        ]
+    },
+    {
+        "id": "197818fa2bce5227",
+        "type": "function",
+        "z": "7025a9372ee6fb08",
+        "name": "DISCO TOTAL",
+        "func": "\n// Informacion del Dispositivo\nvar discototal = msg.payload;\nvar discoTotal = parseFloat(discototal);\n\n//Globalizar\nglobal.set(\"DiscoTotal\", discoTotal);\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 520,
+        "y": 160,
+        "wires": [
+            [
+                "7be15edef5e1e07f"
+            ]
+        ]
+    },
+    {
+        "id": "9bc5d8facf7d49d2",
+        "type": "function",
+        "z": "7025a9372ee6fb08",
+        "name": "DISCO USO",
+        "func": "// Informacion del Dispositivo\nvar discouso = msg.payload;\nvar discoUso = parseFloat(discouso);\n\n//Globalizar\nglobal.set(\"DiscoUso\", discoUso);\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 510,
+        "y": 220,
+        "wires": [
+            [
+                "7be15edef5e1e07f"
+            ]
+        ]
+    },
+    {
+        "id": "f87319bed9e993e3",
+        "type": "function",
+        "z": "7025a9372ee6fb08",
+        "name": "DISCO LIBRE",
+        "func": "// Informacion del Dispositivo\nvar discolibre = msg.payload;\nvar discoLibre = parseFloat(discolibre);\n\n//Globalizar\nglobal.set(\"DiscoLibre\", discoLibre);\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 520,
+        "y": 280,
+        "wires": [
+            [
+                "7be15edef5e1e07f"
+            ]
+        ]
+    },
+    {
+        "id": "5e59929959f49eaf",
+        "type": "function",
+        "z": "7025a9372ee6fb08",
+        "name": "RX",
+        "func": "// Informacion del Dispositivo\nvar rx = msg.payload;\nvar rX = parseFloat(rx);\n\n//Globalizar\nglobal.set(\"RX\", rX);\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 490,
+        "y": 340,
+        "wires": [
+            [
+                "7be15edef5e1e07f"
+            ]
+        ]
+    },
+    {
+        "id": "a280febcde1d7197",
+        "type": "function",
+        "z": "7025a9372ee6fb08",
+        "name": "TX",
+        "func": "// Informacion del Dispositivo\nvar tx = msg.payload;\nvar tX = parseFloat(tx);\n\n//Globalizar\nglobal.set(\"TX\", tX);\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 490,
+        "y": 400,
+        "wires": [
+            [
+                "7be15edef5e1e07f"
+            ]
+        ]
+    },
+    {
+        "id": "7be15edef5e1e07f",
+        "type": "join",
+        "z": "7025a9372ee6fb08",
+        "name": "UNIR",
+        "mode": "custom",
+        "build": "string",
+        "property": "payload",
+        "propertyType": "msg",
+        "key": "topic",
+        "joiner": "\\n",
+        "joinerType": "str",
+        "accumulate": false,
+        "timeout": "",
+        "count": "7",
+        "reduceRight": false,
+        "reduceExp": "",
+        "reduceInit": "",
+        "reduceInitType": "num",
+        "reduceFixup": "",
+        "x": 800,
+        "y": 240,
+        "wires": [
+            [
+                "c3ed62bec4f35923"
+            ]
+        ]
+    },
+    {
+        "id": "1dfbfe2e438fc2d4",
+        "type": "mqtt out",
+        "z": "7025a9372ee6fb08",
+        "name": "PSA2",
+        "topic": "PROYECTOPSA2",
+        "qos": "",
+        "retain": "",
+        "respTopic": "",
+        "contentType": "",
+        "userProps": "",
+        "correl": "",
+        "expiry": "",
+        "broker": "6396623085534e72",
+        "x": 1250,
+        "y": 240,
+        "wires": []
+    },
+    {
+        "id": "298208d466c109e2",
+        "type": "mqtt in",
+        "z": "7025a9372ee6fb08",
+        "name": "PSA2",
+        "topic": "PROYECTOPSA2",
+        "qos": "2",
+        "datatype": "auto-detect",
+        "broker": "6396623085534e72",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 790,
+        "y": 360,
+        "wires": [
+            [
+                "3bb3245e7c6225b6"
+            ]
+        ]
+    },
+    {
+        "id": "c3ed62bec4f35923",
+        "type": "function",
+        "z": "7025a9372ee6fb08",
+        "name": "ENVIAR MQTT",
+        "func": "// Variables por Defecto\nvar hostname = \"CAndino\"\n\n// Informacion de CPU\nvar bCPUFree = global.get(\"CPULibre\");\n\n//Informacion RAM\nvar bRamTotal = global.get(\"MemoriaTotal\");\nvar bRamUsada = global.get(\"MemoriaUsada\");\nvar bRamLibre = global.get(\"MemoriaLibre\");\n\n// Informacion Disco\nvar bDiscoTotal = global.get(\"DiscoTotal\");\nvar bDiscoUsado = global.get(\"DiscoUso\");\nvar bDiscoLibre = global.get(\"DiscoLibre\");\n\n//IP, RX, TX\n\nvar bRX = global.get(\"RX\");\nvar bTX = global.get(\"TX\");\n\n//Ubicacion\n\n\n\n//Query SQL\n// msg.topic = `INSERT INTO datos_server (hostname, uso_cpu, disco_total, disco_libre, disco_usado, ram_total, ram_libre, ram_usada, ip, tx_data, rx_data, fecha, ubicacion) VALUES ('${hostname}','${bCPUFree}','${bDiscoTotal}','${bDiscoLibre}','${bDiscoUsado}','${bRamTotal}', '${bRamLibre}', '${bRamUsada}','${bIP}','${bTX}','${bRX}','${fecha}','${bUbicacion}')`;\n\nmsg.payload = {\n    hostname, bCPUFree, bDiscoTotal, bDiscoLibre, bDiscoUsado,\n    bRamTotal, bRamLibre, bRamUsada,  bTX, bRX, \n}\n\nreturn msg;",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1020,
+        "y": 240,
+        "wires": [
+            [
+                "1dfbfe2e438fc2d4"
+            ]
+        ]
+    },
+    {
+        "id": "3bb3245e7c6225b6",
+        "type": "function",
+        "z": "7025a9372ee6fb08",
+        "name": "GUARDAR DATOS",
+        "func": "var hostname = msg.payload.hostname;\n\n// Informacion de CPU\nvar bCPUFree = msg.payload.bCPUFree;\n\n//Informacion RAM\nvar bRamTotal = msg.payload.bRamTotal;\nvar bRamUsada = msg.payload.bRamUsada;\nvar bRamLibre = msg.payload.bRamLibre;\n\n// Informacion Disco\nvar bDiscoTotal = msg.payload.bDiscoTotal;\nvar bDiscoUsado = msg.payload.bDiscoUsado;\nvar bDiscoLibre = msg.payload.bDiscoLibre;\n\n//IP, RX, TX\nvar bRX = msg.payload.bRX;\nvar bTX = msg.payload.bTX;\n\n//Ubicacion\n\n\n//Query SQL\nmsg.topic = `INSERT INTO psa ( cpu, disckT, disckL, disckU, ramT, ramL, ramU, redTX, redRX) VALUES ('${bCPUFree}', '${bDiscoTotal}', '${bDiscoLibre}', '${bDiscoUsado}', '${bRamTotal}', '${bRamLibre}', '${bRamUsada}', '${bTX}', '${bRX}')`;\n\nreturn msg;",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 950,
+        "y": 360,
+        "wires": [
+            [
+                "d2165926adc2cca6"
+            ]
+        ]
+    },
+    {
+        "id": "15f00331923ff1e8",
+        "type": "function",
+        "z": "7025a9372ee6fb08",
+        "name": "CPU",
+        "func": "\n// Informacion del Dispositivo\nvar cpu_libre = msg.payload;\nvar cpuLibre = parseFloat(cpu_libre);\n\n//Global\nglobal.set(\"CPULibre\", cpuLibre);\nmsg.payload = cpu_libre;\n\nreturn msg;\n",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 490,
+        "y": 100,
+        "wires": [
+            [
+                "7be15edef5e1e07f"
+            ]
+        ]
+    },
+    {
+        "id": "96246f6e4dde247e",
+        "type": "Memory",
+        "z": "7025a9372ee6fb08",
+        "name": "",
+        "scale": "Gigabyte",
+        "x": 300,
+        "y": 60,
+        "wires": [
+            [
+                "92382872d52dbdba"
+            ]
+        ]
+    },
+    {
+        "id": "d2165926adc2cca6",
+        "type": "mysql",
+        "z": "7025a9372ee6fb08",
+        "mydb": "33031790e71befc0",
+        "name": "",
+        "x": 1140,
+        "y": 360,
+        "wires": [
+            [
+                "9a2bcb093cea89ca"
+            ]
+        ]
+    },
+    {
+        "id": "4cd2fc5105a093fc",
+        "type": "cpu",
+        "z": "7025a9372ee6fb08",
+        "name": "",
+        "msgCore": false,
+        "msgOverall": true,
+        "msgArray": false,
+        "msgTemp": false,
+        "x": 310,
+        "y": 100,
+        "wires": [
+            [
+                "15f00331923ff1e8"
+            ]
+        ]
+    },
+    {
+        "id": "6396623085534e72",
+        "type": "mqtt-broker",
+        "name": "",
+        "broker": "broker.hivemq.com",
+        "port": "1883",
+        "clientid": "",
+        "autoConnect": true,
+        "usetls": false,
+        "protocolVersion": "4",
+        "keepalive": "60",
+        "cleansession": true,
+        "autoUnsubscribe": true,
+        "birthTopic": "",
+        "birthQos": "0",
+        "birthPayload": "",
+        "birthMsg": {},
+        "closeTopic": "",
+        "closeQos": "0",
+        "closePayload": "",
+        "closeMsg": {},
+        "willTopic": "",
+        "willQos": "0",
+        "willPayload": "",
+        "willMsg": {},
+        "userProps": "",
+        "sessionExpiry": ""
+    },
+    {
+        "id": "33031790e71befc0",
+        "type": "MySQLdatabase",
+        "name": "",
+        "host": "localhost",
+        "port": "3306",
+        "db": "informacion_pc",
+        "tz": "+00:00",
+        "charset": "UTF8"
+    }
+]
